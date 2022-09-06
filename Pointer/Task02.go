@@ -7,8 +7,8 @@ type Deret struct {
 }
 
 func DeretBilangan(angka int) {
-	var data Deret
-	data.limit = angka
+	var data = Deret{angka}
+
 	fmt.Println("\nLimit n			:", angka)
 	fmt.Println("Bilangan Prima 		:", *data.Prima())
 	fmt.Println("Hasil Genap / Ganjil 	:", *data.OddEven())
@@ -38,7 +38,6 @@ func (num *Deret) OddEven() *string {
 	} else {
 		result = "Bilangan Ganjil"
 	}
-
 	return &result
 }
 
