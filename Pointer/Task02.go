@@ -7,15 +7,16 @@ type Deret struct {
 }
 
 func DeretBilangan(angka int) {
-	var data = Deret{angka}
+
+	var data = &Deret{angka}
 
 	fmt.Println("\nLimit n			:", angka)
-	fmt.Println("Bilangan Prima 		:", *data.Prima())
+	fmt.Println("Bilangan Prima 		:", data.Prima())
 	fmt.Println("Hasil Genap / Ganjil 	:", *data.OddEven())
 	fmt.Println("Bilangan Fibonacci 	:", *data.Fibonacci())
 }
 
-func (pri *Deret) Prima() *[]int {
+func (pri *Deret) Prima() []int {
 	var temp []int
 	for bilangan := 1; bilangan < pri.limit; bilangan++ {
 		i := 0
@@ -28,7 +29,7 @@ func (pri *Deret) Prima() *[]int {
 			temp = append(temp, bilangan)
 		}
 	}
-	return &temp
+	return temp
 }
 
 func (num *Deret) OddEven() *string {
