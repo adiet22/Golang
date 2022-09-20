@@ -1,0 +1,63 @@
+package histories
+
+import (
+	"github.com/adiet95/Golang/GoRent/src/database/orm/models"
+	"github.com/adiet95/Golang/GoRent/src/interfaces"
+)
+
+type history_service struct {
+	history_repo interfaces.HistoryRepo
+}
+
+func NewServiceHis(reps interfaces.HistoryRepo) *history_service {
+	return &history_service{reps}
+}
+
+func (r *history_service) GetAll() (*models.Histories, error) {
+	data, err := r.history_repo.HisFindAll()
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (re *history_service) Add(data *models.History) (*models.History, error) {
+	data, err := re.history_repo.HisSave(data)
+	if err != nil {
+		return nil, err
+	}
+
+	return data, nil
+}
+
+func (re *history_service) Update(data *models.History, id int) (*models.History, error) {
+	data, err := re.history_repo.HisUpdate(data, id)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (re *history_service) Delete(id int) (*models.History, error) {
+	data, err := re.history_repo.HisDelete(id)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (re *history_service) Search(name string) (*models.Histories, error) {
+	data, err := re.history_repo.FindByName(name)
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
+
+func (re *history_service) Favorite() (*models.Histories, error) {
+	data, err := re.history_repo.GetFavo()
+	if err != nil {
+		return nil, err
+	}
+	return data, nil
+}
