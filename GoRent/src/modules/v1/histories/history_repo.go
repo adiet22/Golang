@@ -18,9 +18,7 @@ func NewRepoHis(db *gorm.DB) *history_repo {
 func (r *history_repo) HisFindAll() (*models.Histories, error) {
 	var data models.Histories
 
-	result := r.db.Preload("Vehicle", func(db *gorm.DB) *gorm.DB {
-		return r.db.Select("vehicles_id")
-	}).Order("history_id asc").Find(&data)
+	result := r.db.Order("history_id asc").Find(&data)
 
 	if result.Error != nil {
 		return nil, errors.New("failed obtain datas")
@@ -29,8 +27,8 @@ func (r *history_repo) HisFindAll() (*models.Histories, error) {
 }
 
 func (r *history_repo) HisSave(data *models.History) (*models.History, error) {
-	var datas models.Histories
-	result := r.db.Preload("Vehicle").Find(&datas).Create(data)
+	// var datas models.Histories
+	result := r.db.Create(data)
 	if result.Error != nil {
 		return nil, errors.New("failled to obtain data")
 	}

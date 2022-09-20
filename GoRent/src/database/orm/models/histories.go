@@ -3,9 +3,9 @@ package models
 import "time"
 
 type History struct {
-	HistoryId    uint      `gorm:"type:uint;primaryKey;" json:"id,omitempty"`
-	VehiclesId   uint      `json:"vehicles_id"`
-	Vehicle      Vehicle   `gorm:"foreignKey:VehiclesId;" json:"vehicle_data"`
+	HistoryId uint `gorm:"type:uint;primaryKey;" json:"id,omitempty"`
+	// VehiclesId   uint      `json:"vehicles_id"`
+	// Vehicle      Vehicle   `gorm:"foreignKey:VehiclesId;" json:"vehicle_data"`
 	HistoryName  string    `json:"history_name,omitempty"`
 	Favorite     bool      `json:"favorite"`
 	RentFrom     string    `json:"rent_from,omitempty"`
