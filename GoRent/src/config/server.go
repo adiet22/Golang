@@ -31,7 +31,7 @@ func server(cmd *cobra.Command, args []string) error {
 			Handler:      mainRoute,
 		}
 		pr := os.Getenv("APP_PORT")
-		fmt.Println("Aplikasi Running", pr)
+		fmt.Println("Gorent is running on PORT", pr)
 		srv.ListenAndServe()
 		return nil
 	} else {

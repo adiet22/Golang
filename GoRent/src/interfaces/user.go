@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/adiet95/Golang/GoRent/src/database/orm/models"
+	"github.com/adiet95/Golang/GoRent/src/helpers"
 )
 
 type UserRepo interface {
@@ -12,8 +13,8 @@ type UserRepo interface {
 }
 
 type UserService interface {
-	GetAll() (*models.Users, error)
-	Add(data *models.User) (*models.User, error)
-	Update(data *models.User, email string) (*models.User, error)
-	Delete(email string) (*models.User, error)
+	GetAll() *helpers.Response
+	Add(data *models.User) *helpers.Response
+	Update(data *models.User, email string) *helpers.Response
+	Delete(email string) *helpers.Response
 }

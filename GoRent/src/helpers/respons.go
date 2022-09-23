@@ -5,72 +5,65 @@ import (
 	"net/http"
 )
 
-type Respons struct {
-	Status  int         `json:"status"`
-	Message string      `json:"message"`
-	Data    interface{} `json:"data"`
+type Response struct {
+	Code        int         `json:"-"`
+	Status      string      `json:"status"`
+	IsError     bool        `json:"isError"`
+	Data        interface{} `json:"data,omitempty"`
+	Description interface{} `json:"description,omitempty"`
 }
 
-func (res *Respons) Respon(w http.ResponseWriter, status int, message string, data interface{}, err error) {
-	switch status {
-	case 200:
-		res.Status = status
-		res.Message = message
-		res.Data = data
-		w.WriteHeader(http.StatusOK)
-	case 201:
-		res.Status = status
-		res.Message = message
-		res.Data = data
-		w.WriteHeader(http.StatusCreated)
-	case 204:
-		res.Status = status
-		res.Message = message
-		res.Data = data
-		w.WriteHeader(http.StatusNoContent)
-	case 300:
-		res.Status = status
-		res.Message = message
-		res.Data = data
-		w.WriteHeader(http.StatusMultipleChoices)
-	case 304:
-		res.Status = status
-		res.Message = message
-		res.Data = data
-		w.WriteHeader(http.StatusNotModified)
-	case 400:
-		http.Error(w, "", http.StatusBadRequest)
-		res.Status = status
-		res.Message = err.Error()
-		res.Data = data
-	case 401:
-		http.Error(w, "", http.StatusUnauthorized)
-		res.Status = status
-		res.Message = err.Error()
-		res.Data = data
-	case 403:
-		http.Error(w, "", http.StatusForbidden)
-		res.Status = status
-		res.Message = err.Error()
-		res.Data = data
-	case 404:
-		http.Error(w, "", http.StatusNotFound)
-		res.Status = status
-		res.Message = err.Error()
-		res.Data = data
-	case 500:
-		http.Error(w, "", http.StatusInternalServerError)
-		res.Status = status
-		res.Message = err.Error()
-		res.Data = data
-	default:
-		http.Error(w, "Bad Gateway", http.StatusBadGateway)
-		res.Status = 501
-		res.Message = err.Error()
-		res.Data = data
+func (res *Response) Send(w http.ResponseWriter) {
+	w.Header().Set("Content-Type", "application/json")
+
+	if res.IsError {
+		w.WriteHeader(res.Code)
 	}
 
-	json.NewEncoder(w).Encode(res)
-	//NewEncoder berguna untuk passing respon ke API
-	//Encode berisi data yang ingin di passing
+	err := json.NewEncoder(w).Encode(res)
+	if err != nil {
+		w.Write([]byte("Error When Encode respone"))
+	}
+}
+
+func New(data interface{}, code int, isError bool) *Response {
+	if isError {
+		return &Response{
+			Code:        code,
+			Status:      getStatus(code),
+			IsError:     isError,
+			Description: data,
+		}
+	}
+	return &Response{
+		Code:    code,
+		Status:  getStatus(code),
+		IsError: isError,
+		Data:    data,
+	}
+}
+
+func getStatus(status int) string {
+	var desc string
+	switch status {
+	case 200:
+		desc = "OK"
+	case 201:
+		desc = "Created"
+	case 202:
+		desc = "Accepted"
+	case 304:
+		desc = "Not Modified"
+	case 400:
+		desc = "Bad Request"
+	case 401:
+		desc = "Unauthorized"
+	case 404:
+		desc = "Not Found"
+	case 500:
+		desc = "Internal Server Error"
+	default:
+		desc = "Bad Gateway"
+	}
+	return desc
 }
