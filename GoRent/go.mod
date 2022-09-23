@@ -4,7 +4,14 @@ go 1.18
 
 require github.com/gorilla/mux v1.8.0
 
-require github.com/joho/godotenv v1.4.0 // indirect
+require (
+	github.com/DavidHuie/gomigrate v0.0.0-20190826182718-4adc4b3de142 // indirect
+	github.com/go-gormigrate/gormigrate/v2 v2.0.2 // indirect
+	github.com/inconshreveable/mousetrap v1.0.1 // indirect
+	github.com/joho/godotenv v1.4.0 // indirect
+	github.com/spf13/cobra v1.5.0 // indirect
+	github.com/spf13/pflag v1.0.5 // indirect
+)
 
 require (
 	github.com/ClickHouse/clickhouse-go v1.5.4 // indirect
