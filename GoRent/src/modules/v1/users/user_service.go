@@ -23,12 +23,18 @@ func (r *user_service) GetAll() *helpers.Response {
 }
 
 func (re *user_service) Add(data *models.User) *helpers.Response {
-	data, err := re.user_repo.Save(data)
+
+	hassPassword, err := helpers.HashPassword(data.Password)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
 	}
 
-	return helpers.New(data, 200, false)
+	data.Password = hassPassword
+	result, err := re.user_repo.Save(data)
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+	return helpers.New(result, 200, false)
 }
 
 func (re *user_service) Update(data *models.User, email string) *helpers.Response {
@@ -41,6 +47,14 @@ func (re *user_service) Update(data *models.User, email string) *helpers.Respons
 
 func (re *user_service) Delete(email string) *helpers.Response {
 	data, err := re.user_repo.DeleteUser(email)
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+	return helpers.New(data, 200, false)
+}
+
+func (re *user_service) FindEmail(email string) *helpers.Response {
+	data, err := re.user_repo.FindByEmail(email)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
 	}

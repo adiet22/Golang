@@ -2,6 +2,7 @@ package interfaces
 
 import (
 	"github.com/adiet95/Golang/GoRent/src/database/orm/models"
+	"github.com/adiet95/Golang/GoRent/src/helpers"
 )
 
 type HistoryRepo interface {
@@ -14,10 +15,10 @@ type HistoryRepo interface {
 }
 
 type HistoryService interface {
-	GetAll() (*models.Histories, error)
-	Add(data *models.History) (*models.History, error)
-	Update(data *models.History, id int) (*models.History, error)
-	Delete(id int) (*models.History, error)
-	Search(name string) (*models.Histories, error)
-	Favorite() (*models.Histories, error)
+	GetAll() *helpers.Response
+	Add(data *models.History) *helpers.Response
+	Update(data *models.History, id int) *helpers.Response
+	Delete(id int) *helpers.Response
+	Search(name string) *helpers.Response
+	Favorite() *helpers.Response
 }

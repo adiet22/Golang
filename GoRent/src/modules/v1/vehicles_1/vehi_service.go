@@ -2,6 +2,7 @@ package vehicles
 
 import (
 	"github.com/adiet95/Golang/GoRent/src/database/orm/models"
+	"github.com/adiet95/Golang/GoRent/src/helpers"
 	"github.com/adiet95/Golang/GoRent/src/interfaces"
 )
 
@@ -13,51 +14,50 @@ func NewServiceVe(reps interfaces.VehiRepo) *vehi_service {
 	return &vehi_service{reps}
 }
 
-func (r *vehi_service) GetAll() (*models.Vehicles, error) {
+func (r *vehi_service) GetAll() *helpers.Response {
 	data, err := r.vehi_repo.VeFindAll()
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-	return data, nil
+	return helpers.New(data, 200, false)
 }
 
-func (re *vehi_service) Add(data *models.Vehicle) (*models.Vehicle, error) {
-	data, err := re.vehi_repo.VeSave(data)
+func (re *vehi_service) Add(data *models.Vehicle) *helpers.Response {
+	result, err := re.vehi_repo.VeSave(data)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-
-	return data, nil
+	return helpers.New(result, 200, false)
 }
 
-func (re *vehi_service) Update(data *models.Vehicle, id int) (*models.Vehicle, error) {
+func (re *vehi_service) Update(data *models.Vehicle, id int) *helpers.Response {
 	data, err := re.vehi_repo.VeUpdate(data, id)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-	return data, nil
+	return helpers.New(data, 200, false)
 }
 
-func (re *vehi_service) Delete(id int) (*models.Vehicle, error) {
+func (re *vehi_service) Delete(id int) *helpers.Response {
 	data, err := re.vehi_repo.VeDelete(id)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-	return data, nil
+	return helpers.New(data, 200, false)
 }
 
-func (re *vehi_service) Search(name string) (*models.Vehicles, error) {
+func (re *vehi_service) Search(name string) *helpers.Response {
 	data, err := re.vehi_repo.FindByName(name)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-	return data, nil
+	return helpers.New(data, 200, false)
 }
 
-func (re *vehi_service) Popular(city string) (*models.Vehicles, error) {
+func (re *vehi_service) Popular(city string) *helpers.Response {
 	data, err := re.vehi_repo.PopularInCity(city)
 	if err != nil {
-		return nil, err
+		return helpers.New(err.Error(), 400, true)
 	}
-	return data, nil
+	return helpers.New(data, 200, false)
 }

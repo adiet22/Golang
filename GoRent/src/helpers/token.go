@@ -10,15 +10,15 @@ import (
 var mySecrets = []byte(os.Getenv("JWT_KEYS"))
 
 type claims struct {
-	Username string
-	Role     string
+	Email string
+	Role  string
 	jwt.StandardClaims
 }
 
-func NewToken(username, role string) *claims {
+func NewToken(Email, role string) *claims {
 	return &claims{
-		Username: username,
-		Role:     role,
+		Email: Email,
+		Role:  role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(),
 		},

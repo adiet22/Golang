@@ -18,4 +18,5 @@ type UserService interface {
 	Add(data *models.User) *helpers.Response
 	Update(data *models.User, email string) *helpers.Response
 	Delete(email string) *helpers.Response
+	FindEmail(email string) *helpers.Response
 }

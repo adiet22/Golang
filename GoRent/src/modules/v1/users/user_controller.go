@@ -18,7 +18,10 @@ func NewCtrl(reps interfaces.UserService) *user_ctrl {
 }
 
 func (re *user_ctrl) GetAll(w http.ResponseWriter, r *http.Request) {
-	re.svc.GetAll().Send(w)
+	claim_user := r.Context().Value("email")
+
+	result := re.svc.FindEmail(claim_user.(string))
+	result.Send(w)
 }
 
 func (re *user_ctrl) Add(w http.ResponseWriter, r *http.Request) {
