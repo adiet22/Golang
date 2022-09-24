@@ -65,3 +65,16 @@ func (re *user_repo) DeleteUser(email string) (*models.User, error) {
 	}
 	return nil, nil
 }
+
+func (re *user_repo) FindByEmail(email string) (*models.User, error) {
+	var data *models.User
+	var datas *models.Users
+	res := re.db.Model(&data).Where("email = ?", email).Find(&datas)
+	if res.Error != nil {
+		return nil, errors.New("failed to update data")
+	}
+	if res.RowsAffected == 0 {
+		return nil, errors.New("email not found")
+	}
+	return data, nil
+}

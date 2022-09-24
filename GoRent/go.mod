@@ -8,6 +8,7 @@ require (
 	github.com/DavidHuie/gomigrate v0.0.0-20190826182718-4adc4b3de142 // indirect
 	github.com/fsnotify/fsnotify v1.5.4 // indirect
 	github.com/go-gormigrate/gormigrate/v2 v2.0.2 // indirect
+	github.com/golang-jwt/jwt/v4 v4.4.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.0.1 // indirect
 	github.com/joho/godotenv v1.4.0 // indirect

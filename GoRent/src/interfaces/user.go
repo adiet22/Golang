@@ -10,6 +10,7 @@ type UserRepo interface {
 	Save(data *models.User) (*models.User, error)
 	UpdateUser(data *models.User, email string) (*models.User, error)
 	DeleteUser(email string) (*models.User, error)
+	FindByEmail(email string) (*models.User, error)
 }
 
 type UserService interface {
