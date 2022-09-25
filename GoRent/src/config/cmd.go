@@ -2,6 +2,7 @@ package config
 
 import (
 	"github.com/adiet95/Golang/GoRent/src/database/orm"
+	"github.com/adiet95/Golang/GoRent/src/database/orm/seeding"
 	"github.com/spf13/cobra"
 )
 
@@ -12,7 +13,7 @@ var initCommand = cobra.Command{
 func init() {
 	initCommand.AddCommand(ServeCmd)
 	initCommand.AddCommand(orm.MigrateCmd)
-
+	initCommand.AddCommand(seeding.SeedCmd)
 }
 
 func Run(args []string) error {
