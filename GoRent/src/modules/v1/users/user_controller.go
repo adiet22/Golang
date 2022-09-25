@@ -25,6 +25,7 @@ func (re *user_ctrl) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (re *user_ctrl) Add(w http.ResponseWriter, r *http.Request) {
+
 	var data models.User
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
