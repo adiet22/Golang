@@ -25,13 +25,13 @@ func (re *user_ctrl) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (re *user_ctrl) Add(w http.ResponseWriter, r *http.Request) {
-	var datas models.User
-	err := json.NewDecoder(r.Body).Decode(&datas)
+	var data models.User
+	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
-		helpers.New(err.Error(), 400, true)
+		helpers.New(err, 500, true)
 		return
 	}
-	re.svc.Add(&datas).Send(w)
+	re.svc.Add(&data).Send(w)
 }
 
 func (re *user_ctrl) Update(w http.ResponseWriter, r *http.Request) {

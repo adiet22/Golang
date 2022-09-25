@@ -10,14 +10,14 @@ import (
 )
 
 // Koneksi ke Database dengan GORM
-var godotenv helpers.Godot
+// var godotenv helpers.Godot
 
 func New() (*gorm.DB, error) {
 
-	host := godotenv.GoDotEnv("HOST")
-	user := godotenv.GoDotEnv("USER")
-	password := godotenv.GoDotEnv("PASS")
-	dbName := godotenv.GoDotEnv("DB")
+	host := helpers.Godotenv("HOST")
+	user := helpers.Godotenv("USER")
+	password := helpers.Godotenv("PASS")
+	dbName := helpers.Godotenv("DB")
 
 	config := fmt.Sprintf("host=%s user=%s password=%s dbname=%s", host, user, password, dbName)
 

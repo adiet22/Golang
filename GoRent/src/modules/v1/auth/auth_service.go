@@ -7,7 +7,10 @@ import (
 )
 
 type auth_service struct {
-	user_repo interfaces.UserRepo
+	repo interfaces.UserRepo
+}
+type token_response struct {
+	Tokens string `json:"token"`
 }
 
 func NewService(reps interfaces.UserRepo) *auth_service {
@@ -15,11 +18,11 @@ func NewService(reps interfaces.UserRepo) *auth_service {
 }
 
 func (a auth_service) Login(body models.User) *helpers.Response {
-	user, err := a.user_repo.FindByEmail(body.Email)
+	user, err := a.repo.FindByEmail(body.Email)
 	if err != nil {
 		return helpers.New("email not registered", 401, true)
 	}
-	if helpers.CheckPass(user.Password, body.Password) {
+	if !helpers.CheckPass(user.Password, body.Password) {
 		return helpers.New("wrong password", 401, true)
 	}
 	token := helpers.NewToken(body.Email, user.Role)
@@ -27,5 +30,5 @@ func (a auth_service) Login(body models.User) *helpers.Response {
 	if err != nil {
 		return helpers.New(err.Error(), 401, true)
 	}
-	return helpers.New(theToken, 200, false)
+	return helpers.New(token_response{Tokens: theToken}, 200, false)
 }

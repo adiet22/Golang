@@ -20,8 +20,8 @@ func New() (*mux.Router, error) {
 		return nil, errors.New("gagal init database")
 	}
 
+	auth.NewAu(mainRoute, db)
 	users.New(mainRoute, db)
-	auth.New(mainRoute, db)
 	vehicles.NewVe(mainRoute, db)
 	histories.NewHis(mainRoute, db)
 

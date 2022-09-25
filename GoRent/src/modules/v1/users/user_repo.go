@@ -28,7 +28,7 @@ func (r *user_repo) FindAll() (*models.Users, error) {
 
 func (r *user_repo) Save(data *models.User) (*models.User, error) {
 	var datas models.Users
-	res := r.db.Where("email = ?", data.Email).Find(&datas).Take(&data)
+	res := r.db.Where("email = ?", data.Email).Find(&datas)
 
 	if res.RowsAffected != 0 {
 		return nil, errors.New("email already registered")
@@ -69,9 +69,10 @@ func (re *user_repo) DeleteUser(email string) (*models.User, error) {
 func (re *user_repo) FindByEmail(email string) (*models.User, error) {
 	var data *models.User
 	var datas *models.Users
-	res := re.db.Model(&data).Where("email = ?", email).Find(&datas)
+
+	res := re.db.Model(&datas).Where("email = ?", email).Find(&data)
 	if res.Error != nil {
-		return nil, errors.New("failed to update data")
+		return nil, errors.New("failed to find data")
 	}
 	if res.RowsAffected == 0 {
 		return nil, errors.New("email not found")

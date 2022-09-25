@@ -1,13 +1,12 @@
 package helpers
 
 import (
-	"os"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
 )
 
-var mySecrets = []byte(os.Getenv("JWT_KEYS"))
+var mySecrets = []byte(Godotenv("JWT_KEYS"))
 
 type claims struct {
 	Email string
@@ -15,9 +14,9 @@ type claims struct {
 	jwt.StandardClaims
 }
 
-func NewToken(Email, role string) *claims {
+func NewToken(email, role string) *claims {
 	return &claims{
-		Email: Email,
+		Email: email,
 		Role:  role,
 		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Minute * 5).Unix(),
@@ -26,8 +25,7 @@ func NewToken(Email, role string) *claims {
 }
 
 func (c *claims) Create() (string, error) {
-	tokens := jwt.NewWithClaims(jwt.SigningMethodES256, c)
-
+	tokens := jwt.NewWithClaims(jwt.SigningMethodHS256, c)
 	return tokens.SignedString(mySecrets)
 }
 

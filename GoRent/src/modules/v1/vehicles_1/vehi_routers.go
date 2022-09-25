@@ -1,6 +1,7 @@
 package vehicles
 
 import (
+	"github.com/adiet95/Golang/GoRent/src/middleware"
 	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
@@ -11,11 +12,11 @@ func NewVe(rt *mux.Router, db *gorm.DB) {
 	svc := NewServiceVe(repo)
 	ctrl := NewCtrlVe(svc)
 
-	route.HandleFunc("/", ctrl.GetAll).Methods("GET")
-	route.HandleFunc("/", ctrl.Add).Methods("POST")
-	route.HandleFunc("/", ctrl.Update).Methods("PUT")
-	route.HandleFunc("/", ctrl.Delete).Methods("DELETE")
-	route.HandleFunc("/search", ctrl.Search).Methods("POST")
-	route.HandleFunc("/popular", ctrl.Popular).Methods("POST")
+	route.HandleFunc("/", middleware.CheckAuth(ctrl.Add)).Methods("GET")
+	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Add))).Methods("POST")
+	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Update))).Methods("PUT")
+	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Delete))).Methods("DELETE")
+	route.HandleFunc("/search", middleware.CheckAuth(ctrl.Search)).Methods("POST")
+	route.HandleFunc("/popular", middleware.CheckAuth(ctrl.Popular)).Methods("POST")
 
 }

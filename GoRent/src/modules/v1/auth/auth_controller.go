@@ -10,14 +10,14 @@ import (
 )
 
 type auth_ctrl struct {
-	user_repo interfaces.AuthService
+	repo interfaces.AuthService
 }
 
 func NewCtrl(reps interfaces.AuthService) *auth_ctrl {
 	return &auth_ctrl{reps}
 }
 
-func (a auth_ctrl) SignIn(w http.ResponseWriter, r *http.Request) {
+func (a *auth_ctrl) SignIn(w http.ResponseWriter, r *http.Request) {
 	var data models.User
 
 	err := json.NewDecoder(r.Body).Decode(&data)
@@ -25,5 +25,5 @@ func (a auth_ctrl) SignIn(w http.ResponseWriter, r *http.Request) {
 		helpers.New(err.Error(), 401, true)
 		return
 	}
-	a.user_repo.Login(data).Send(w)
+	a.repo.Login(data).Send(w)
 }

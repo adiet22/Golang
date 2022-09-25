@@ -14,22 +14,14 @@ func NewService(reps interfaces.UserRepo) *user_service {
 	return &user_service{reps}
 }
 
-func (r *user_service) GetAll() *helpers.Response {
-	data, err := r.user_repo.FindAll()
-	if err != nil {
-		return helpers.New(err.Error(), 400, true)
-	}
-	return helpers.New(data, 200, false)
-}
-
 func (re *user_service) Add(data *models.User) *helpers.Response {
 
-	hassPassword, err := helpers.HashPassword(data.Password)
+	hassPass, err := helpers.HashPassword(data.Password)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
 	}
 
-	data.Password = hassPassword
+	data.Password = hassPass
 	result, err := re.user_repo.Save(data)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
@@ -57,6 +49,13 @@ func (re *user_service) FindEmail(email string) *helpers.Response {
 	data, err := re.user_repo.FindByEmail(email)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
+	}
+	if data.Role == "admin" {
+		datas, err := re.user_repo.FindAll()
+		if err != nil {
+			return helpers.New(err.Error(), 400, true)
+		}
+		return helpers.New(datas, 200, false)
 	}
 	return helpers.New(data, 200, false)
 }

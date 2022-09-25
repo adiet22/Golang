@@ -7,11 +7,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-type Godot struct {
-	k string
-}
-
-func (ke *Godot) GoDotEnv(key string) string {
+func Godotenv(key string) string {
 	// load .env file
 	err := godotenv.Load(".env")
 

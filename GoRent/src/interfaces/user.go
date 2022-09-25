@@ -14,7 +14,6 @@ type UserRepo interface {
 }
 
 type UserService interface {
-	GetAll() *helpers.Response
 	Add(data *models.User) *helpers.Response
 	Update(data *models.User, email string) *helpers.Response
 	Delete(email string) *helpers.Response
