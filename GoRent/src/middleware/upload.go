@@ -19,12 +19,11 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 			http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
 			return
 		}
-
 		// The argument to FormFile must match the name attribute
 		// of the file input on the frontend
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
-			helpers.New("error form file", 401, true).Send(w)
+			helpers.New("invalid attribute", 401, true).Send(w)
 			return
 		}
 		defer file.Close()
@@ -33,7 +32,7 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 		// already exist
 		err = os.MkdirAll("./uploads", os.ModePerm)
 		if err != nil {
-			helpers.New("eeror mkdir", 401, true).Send(w)
+			helpers.New("error build file location", 401, true).Send(w)
 			return
 		}
 
@@ -42,7 +41,7 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 		res := fmt.Sprintf("./uploads/%d-%s%s", time.Now().UnixNano(), fileName, filepath.Ext(fileHeader.Filename))
 		dst, err := os.Create(res)
 		if err != nil {
-			helpers.New("error upload", 401, true).Send(w)
+			helpers.New("error while upload file", 401, true).Send(w)
 			return
 		}
 		defer dst.Close()
@@ -54,22 +53,6 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 			helpers.New("error copy filesystem", 401, true).Send(w)
 			return
 		}
-
-		//Mengatur ekstensi file yang di upload
-		// buff := make([]byte, 512)
-		// // _, err = file.Read(buff)
-		// // if err != nil {
-		// // 	helpers.New("error make", 401, true).Send(w)
-		// // 	return
-		// // }
-
-		// filetype := http.DetectContentType(buff)
-		// if filetype != "image/jpeg" && filetype != "image/png" {
-		// 	{
-		// 		helpers.New("The provided file format is not allowed. Please upload a JPEG or PNG image", 401, true).Send(w)
-		// 		return
-		// 	}
-		// }
 		helpers.New("File uploaded successful", 200, false).Send(w)
 		next.ServeHTTP(w, r)
 	}

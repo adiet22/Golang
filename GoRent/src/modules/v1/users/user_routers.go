@@ -14,6 +14,6 @@ func New(rt *mux.Router, db *gorm.DB) {
 
 	route.HandleFunc("/", middleware.CheckAuth(ctrl.GetAll)).Methods("GET")
 	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(middleware.UploadFile(ctrl.Add)))).Methods("POST")
-	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Update))).Methods("PUT")
+	route.HandleFunc("/", middleware.CheckAuth(ctrl.Update)).Methods("PUT")
 	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Delete))).Methods("DELETE")
 }

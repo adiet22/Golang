@@ -11,6 +11,7 @@ type UserRepo interface {
 	UpdateUser(data *models.User, email string) (*models.User, error)
 	DeleteUser(email string) (*models.User, error)
 	FindByEmail(email string) (*models.User, error)
+	RegisterEmail(data *models.User) (*models.User, error)
 }
 
 type UserService interface {

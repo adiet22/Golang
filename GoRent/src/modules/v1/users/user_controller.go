@@ -25,7 +25,6 @@ func (re *user_ctrl) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (re *user_ctrl) Add(w http.ResponseWriter, r *http.Request) {
-
 	var data models.User
 	err := json.NewDecoder(r.Body).Decode(&data)
 	if err != nil {
@@ -36,7 +35,7 @@ func (re *user_ctrl) Add(w http.ResponseWriter, r *http.Request) {
 }
 
 func (re *user_ctrl) Update(w http.ResponseWriter, r *http.Request) {
-	val := r.URL.Query().Get("email")
+	claim_user := r.Context().Value("email")
 
 	var datas models.User
 	err := json.NewDecoder(r.Body).Decode(&datas)
@@ -44,7 +43,7 @@ func (re *user_ctrl) Update(w http.ResponseWriter, r *http.Request) {
 		helpers.New(err.Error(), 400, true)
 		return
 	}
-	re.svc.Update(&datas, val).Send(w)
+	re.svc.Update(&datas, claim_user.(string)).Send(w)
 }
 
 func (re *user_ctrl) Delete(w http.ResponseWriter, r *http.Request) {

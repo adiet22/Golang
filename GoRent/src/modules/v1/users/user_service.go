@@ -30,11 +30,19 @@ func (re *user_service) Add(data *models.User) *helpers.Response {
 }
 
 func (re *user_service) Update(data *models.User, email string) *helpers.Response {
-	data, err := re.user_repo.UpdateUser(data, email)
+	hassPass, err := helpers.HashPassword(data.Password)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
 	}
-	return helpers.New(data, 200, false)
+	data.Email = email
+	data.Role = "user"
+	data.Password = hassPass
+
+	result, err := re.user_repo.UpdateUser(data, email)
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+	return helpers.New(result, 200, false)
 }
 
 func (re *user_service) Delete(email string) *helpers.Response {

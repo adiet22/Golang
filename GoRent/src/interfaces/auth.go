@@ -7,4 +7,5 @@ import (
 
 type AuthService interface {
 	Login(body models.User) *helpers.Response
+	Register(body *models.User) *helpers.Response
 }
