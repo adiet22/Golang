@@ -1,6 +1,8 @@
 package users
 
 import (
+	"os"
+
 	"github.com/adiet95/Golang/GoRent/src/database/orm/models"
 	"github.com/adiet95/Golang/GoRent/src/helpers"
 	"github.com/adiet95/Golang/GoRent/src/interfaces"
@@ -29,13 +31,31 @@ func (re *user_service) Add(data *models.User) *helpers.Response {
 	return helpers.New(result, 200, false)
 }
 
-func (re *user_service) Update(data *models.User, email string) *helpers.Response {
+func (re *user_service) Update(data *models.User, email string, fileName string, path string) *helpers.Response {
+	//Get old path then remove the old file in directory
+	oldData, err := re.user_repo.FindByEmail(email)
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+
+	oldPath := &oldData.Path
+	if *oldPath != "" {
+		err1 := os.Remove(*oldPath)
+		if err1 != nil {
+			return helpers.New(err1.Error(), 400, true)
+		}
+	}
+
+	//Hasing New Password and update data
 	hassPass, err := helpers.HashPassword(data.Password)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)
 	}
-	data.Email = email
-	data.Role = "user"
+
+	data.FileName = fileName
+	data.Path = path
+	data.Email = oldData.Email
+	data.Role = oldData.Role
 	data.Password = hassPass
 
 	result, err := re.user_repo.UpdateUser(data, email)
@@ -46,6 +66,16 @@ func (re *user_service) Update(data *models.User, email string) *helpers.Respons
 }
 
 func (re *user_service) Delete(email string) *helpers.Response {
+	oldData, err := re.user_repo.FindByEmail(email)
+	if err != nil {
+		return helpers.New(err.Error(), 400, true)
+	}
+	oldPath := &oldData.Path
+	err1 := os.Remove(*oldPath)
+	if err1 != nil {
+		return helpers.New(err1.Error(), 400, true)
+	}
+
 	data, err := re.user_repo.DeleteUser(email)
 	if err != nil {
 		return helpers.New(err.Error(), 400, true)

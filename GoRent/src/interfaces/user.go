@@ -16,7 +16,7 @@ type UserRepo interface {
 
 type UserService interface {
 	Add(data *models.User) *helpers.Response
-	Update(data *models.User, email string) *helpers.Response
+	Update(data *models.User, email string, fileName string, path string) *helpers.Response
 	Delete(email string) *helpers.Response
 	FindEmail(email string) *helpers.Response
 }

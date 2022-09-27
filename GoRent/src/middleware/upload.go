@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -13,14 +14,13 @@ import (
 
 func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		const MAX_UPLOAD_SIZE = 1024 * 1024 // 1MB
-		r.Body = http.MaxBytesReader(w, r.Body, MAX_UPLOAD_SIZE)
-		if err := r.ParseMultipartForm(MAX_UPLOAD_SIZE); err != nil {
-			http.Error(w, "The uploaded file is too big. Please choose an file that's less than 1MB in size", http.StatusBadRequest)
+		const max = 1024 * 1024 // 1MB
+		r.Body = http.MaxBytesReader(w, r.Body, max)
+		if err := r.ParseMultipartForm(max); err != nil {
+			helpers.New("The uploaded file is less than 1MB in size", 400, true)
 			return
 		}
-		// The argument to FormFile must match the name attribute
-		// of the file input on the frontend
+		// check attribut file yang di upload
 		file, fileHeader, err := r.FormFile("file")
 		if err != nil {
 			helpers.New("invalid attribute", 401, true).Send(w)
@@ -28,32 +28,54 @@ func UploadFile(next http.HandlerFunc) http.HandlerFunc {
 		}
 		defer file.Close()
 
-		// Create the uploads folder if it doesn't
-		// already exist
+		//Checking extension
+		buff := make([]byte, 512)
+		_, err = file.Read(buff)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		filetype := http.DetectContentType(buff)
+		if filetype != "image/jpeg" && filetype != "image/png" {
+			helpers.New("Extension file not allowed", 401, true).Send(w)
+			return
+		}
+
+		_, err = file.Seek(0, io.SeekStart)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+
+		// Membuat folder file upload
 		err = os.MkdirAll("./uploads", os.ModePerm)
 		if err != nil {
 			helpers.New("error build file location", 401, true).Send(w)
 			return
 		}
 
+		// Membuat file baru di direktori file upload
 		fileName := r.FormValue("file_name")
-		// Create a new file in the uploads directory
-		res := fmt.Sprintf("./uploads/%d-%s%s", time.Now().UnixNano(), fileName, filepath.Ext(fileHeader.Filename))
+		temp := fmt.Sprintf("%d-%s-%s", time.Now().UnixNano(), fileName, filepath.Ext(fileHeader.Filename))
+		res := fmt.Sprintf("./uploads/%d-%s-%s", time.Now().UnixNano(), fileName, filepath.Ext(fileHeader.Filename))
 		dst, err := os.Create(res)
 		if err != nil {
 			helpers.New("error while upload file", 401, true).Send(w)
 			return
 		}
+		var name interface{} = temp
+
 		defer dst.Close()
 
-		// Copy the uploaded file to the filesystem
-		// at the specified destination
+		// Mengcopy file ke filesistem sesuai direktorinya
 		_, err = io.Copy(dst, file)
 		if err != nil {
 			helpers.New("error copy filesystem", 401, true).Send(w)
 			return
 		}
-		helpers.New("File uploaded successful", 200, false).Send(w)
-		next.ServeHTTP(w, r)
+
+		ctx := context.WithValue(r.Context(), "dir", name)
+		next.ServeHTTP(w, r.WithContext(ctx))
 	}
 }

@@ -12,7 +12,7 @@ func NewVe(rt *mux.Router, db *gorm.DB) {
 	svc := NewServiceVe(repo)
 	ctrl := NewCtrlVe(svc)
 
-	route.HandleFunc("/", middleware.CheckAuth(ctrl.Add)).Methods("GET")
+	route.HandleFunc("/", middleware.CheckAuth(ctrl.GetAll)).Methods("GET")
 	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Add))).Methods("POST")
 	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Update))).Methods("PUT")
 	route.HandleFunc("/", middleware.CheckAuth(middleware.CheckAuthor(ctrl.Delete))).Methods("DELETE")

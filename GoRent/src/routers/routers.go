@@ -5,6 +5,7 @@ import (
 
 	"github.com/adiet95/Golang/GoRent/src/database/orm"
 	"github.com/adiet95/Golang/GoRent/src/modules/v1/auth"
+	"github.com/adiet95/Golang/GoRent/src/modules/v1/checkout"
 	"github.com/adiet95/Golang/GoRent/src/modules/v1/histories"
 	"github.com/adiet95/Golang/GoRent/src/modules/v1/users"
 	vehicles "github.com/adiet95/Golang/GoRent/src/modules/v1/vehicles_1"
@@ -22,6 +23,7 @@ func New() (*mux.Router, error) {
 
 	auth.NewAu(mainRoute, db)
 	users.New(mainRoute, db)
+	checkout.New(mainRoute, db)
 	vehicles.NewVe(mainRoute, db)
 	histories.NewHis(mainRoute, db)
 

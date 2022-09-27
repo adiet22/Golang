@@ -1,12 +1,12 @@
 package users
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"github.com/adiet95/Golang/GoRent/src/database/orm/models"
 	"github.com/adiet95/Golang/GoRent/src/helpers"
 	"github.com/adiet95/Golang/GoRent/src/interfaces"
+	"github.com/gorilla/schema"
 )
 
 type user_ctrl struct {
@@ -25,25 +25,46 @@ func (re *user_ctrl) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 func (re *user_ctrl) Add(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "multipart/form-data")
+	var decode = schema.NewDecoder()
 	var data models.User
-	err := json.NewDecoder(r.Body).Decode(&data)
+
+	x := r.Context().Value("dir")
+	res := x.(string)
+	path := "./uploads/" + res
+	data.FileName = res
+	data.Path = path
+
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
 		helpers.New(err, 500, true)
 		return
 	}
+
+	decode.Decode(&data, r.Form)
 	re.svc.Add(&data).Send(w)
+
 }
 
 func (re *user_ctrl) Update(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-type", "multipart/form-data")
 	claim_user := r.Context().Value("email")
 
-	var datas models.User
-	err := json.NewDecoder(r.Body).Decode(&datas)
+	var decode = schema.NewDecoder()
+	var data models.User
+
+	x := r.Context().Value("dir")
+	fileName := x.(string)
+	path := "./uploads/" + fileName
+
+	err := r.ParseMultipartForm(32 << 20)
 	if err != nil {
-		helpers.New(err.Error(), 400, true)
+		helpers.New(err, 500, true)
 		return
 	}
-	re.svc.Update(&datas, claim_user.(string)).Send(w)
+
+	decode.Decode(&data, r.Form)
+	re.svc.Update(&data, claim_user.(string), fileName, path).Send(w)
 }
 
 func (re *user_ctrl) Delete(w http.ResponseWriter, r *http.Request) {
